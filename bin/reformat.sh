@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SM=`grep "^##SAMPLE=<ID=NORM" $1 | grep -oP '(?<=Individual=).*?(?=,Desc)'`	#get the sample name from the header of input vcf
+SM=`grep "^#CHROM" $1 | awk '{print $10}'`	#get the sample name from the header of input vcf
 
 uniqID=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
 res=$SM"_"$uniqID"_reformat.tsv"						#get the name of the output
@@ -24,7 +24,7 @@ grep -v "^#" $1 | awk '{ 							#duplicate the column start to have start and en
 
 sed -i "s/$/\t$SM/" $res							#add the sample name as a last column
 
-TSS=`echo $SM | sed -e 's/TCGA-\(.*\)-.*/\1/'`
+TSS=`echo $SM | tr "-" "     " | awk '{print $2}'`
 
 sourceSite=`awk -F "	" -v tss="$TSS" '$1 == tss {print $3}' $2`		#get the tissue source site from sample barcode
 
