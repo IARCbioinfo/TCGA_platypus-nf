@@ -9,25 +9,25 @@ argsL <- as.list(as.character(as.data.frame(do.call("rbind", parseArgs(args)))$V
 names(argsL) <- as.data.frame(do.call("rbind", parseArgs(args)))$V1
 args <- argsL;rm(argsL)
 
-if(is.null(args$min_af)) args$min_af = 0.25
-if(is.null(args$min_DP)) args$min_DP = 20
+if(is.null(args$min_af)) args$min_af = 0.1
+if(is.null(args$min_DP)) args$min_DP = 10
 
 min_af = as.numeric(args$min_af)
 min_DP = as.numeric(args$min_DP)
 VCF = args$vcf
 
 # read the input VCF
-vcf = read.table(pipe(paste("grep -v '^##' ",VCF," | sed s/^#//" )),stringsAsFactors=F,header=T,sep="\t",quote=NULL)
+vcf = read.table(pipe(paste("grep -v '^##' ",VCF," | sed s/^#//" )),stringsAsFactors=F,header=T,sep="\t",quote=NULL,check.names = F)
 header_size = as.numeric(system(paste(paste("sed -e '/^#CHROM/,$d' ",VCF,sep="")," | wc -l",sep=""), intern = T))
 con = file(VCF,"r")
 header = readLines(con, n=header_size)
 close(con)
 
 # compute filtered VCF
-vaf = get_genotype(vcf$NORMAL,vcf$FORMAT[1],"FA")
-status = get_info(vcf$INFO,"SS",num=F)
-DP = get_genotype(vcf$NORMAL,vcf$FORMAT[1],"DP")
-new_vcf = vcf[vaf >= min_af & status == "Germline" & DP >= min_DP,]
+geno_col = which(colnames(vcf) == "FORMAT") + 1
+DP = get_genotype(vcf[,geno_col],vcf$FORMAT[1],"NR")
+vaf = get_genotype(vcf[,geno_col],vcf$FORMAT[1],"NV") / DP
+new_vcf = vcf[which(vaf >= min_af & vcf$FILTER=="PASS" & DP >= min_DP),]
 colnames(new_vcf)[1]="#CHROM"
 
 # output the new VCF
