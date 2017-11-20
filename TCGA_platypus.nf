@@ -87,7 +87,7 @@ process filter_blood_tissue {
   shell:
   if(params.blood_tissue_filter){
     '''
-    blood_tissue_filter.R --min_blood_QUAL=!{params.min_blood_QUAL} --min_tissue_QUAL=!{params.min_tissue_QUAL}
+    blood_tissue_filter.R --min_blood_QUAL=!{params.min_blood_QUAL} --min_tissue_QUAL=!{params.min_tissue_QUAL} --cpu=!{params.cpu_R}
     '''
   } else {
     '''
