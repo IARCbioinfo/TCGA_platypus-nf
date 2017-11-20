@@ -14,11 +14,13 @@ if (params.help) {
     log.info 'nextflow run TCGA_platypus.nf --TCGA_folder /path/to/parent/TCGA/folder'
     log.info ''
     log.info 'Mandatory arguments:'
-    log.info '    --TCGA_folder        FOLDER                  Input folder of TCGA VCFs.'
+    log.info '    --TCGA_folder          FOLDER                  Input folder of TCGA VCFs.'
     log.info 'Optional arguments:'
-    log.info '    --out_folder         FOLDER                  Output folder containing annovar-ready tables.'
-    log.info '    --min_af             VALUE                   Minimum allelic fraction to consider a germline. Default=0.1.'
-    log.info '    --min_DP             VALUE                   Minimum coverage to consider a site. Default=10.'
+    log.info '    --out_folder           FOLDER                  Output folder containing annovar-ready tables.'
+    log.info '    --min_af               VALUE                   Minimum allelic fraction to consider a germline. Default=0.1.'
+    log.info '    --min_DP               VALUE                   Minimum coverage to consider a site. Default=10.'
+    log.info "Flags:"
+    log.info '    --blood_tissue_filter                          To filter callings if both blood and tissue samples are available.'
     log.info ''
     log.info ''
     exit 1
