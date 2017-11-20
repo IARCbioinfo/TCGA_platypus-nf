@@ -8,7 +8,6 @@ params.min_tissue_QUAL = 100
 params.cpu_R = 1
 params.mem_R = 4
 
-
 if (params.help) {
     log.info ''
     log.info '-------------------------------------------------------------'
