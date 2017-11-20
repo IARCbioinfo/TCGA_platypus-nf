@@ -5,6 +5,9 @@ params.min_DP = 10
 params.blood_tissue_filter = false
 params.min_blood_QUAL = 100
 params.min_tissue_QUAL = 100
+params.cpu_R = 1
+params.mem_R = 4
+
 
 if (params.help) {
     log.info ''
@@ -23,6 +26,8 @@ if (params.help) {
     log.info '    --min_DP               VALUE                   Minimum coverage to consider a site. Default=10.'
     log.info '    --min_blood_QUAL       VALUE                   Minimum QUAL to retain a variant found only in the blood. Default=100.'
     log.info '    --min_tissue_QUAL      VALUE                   Minimum QUAL to retain a variant found only in the tissue. Default=100.'
+    log.info '    --cpu_R                VALUE                   Number of cpu to run R filtering on blood/normal samples in parallel. Default=1.'
+    log.info '    --mem_R                VALUE                   Memory (in GB) for R filtering on blood/normal samples. Default=4.'
     log.info "Flags:"
     log.info '    --blood_tissue_filter                          To filter callings if both blood and tissue samples are available.'
     log.info ''
@@ -70,6 +75,9 @@ process reformat {
 }
 
 process filter_blood_tissue {
+
+  cpus params.cpu_R
+  memory params.mem_R+'G'
 
   input:
   file all_reformated from reformated.toList()
