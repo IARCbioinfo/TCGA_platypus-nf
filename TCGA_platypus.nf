@@ -3,6 +3,7 @@ params.out_folder = "."
 params.min_af = 0.1
 params.min_DP = 10
 params.blood_tissue_filter = false
+params.min_blood_QUAL = 100
 
 if (params.help) {
     log.info ''
@@ -19,6 +20,7 @@ if (params.help) {
     log.info '    --out_folder           FOLDER                  Output folder containing annovar-ready tables.'
     log.info '    --min_af               VALUE                   Minimum allelic fraction to consider a germline. Default=0.1.'
     log.info '    --min_DP               VALUE                   Minimum coverage to consider a site. Default=10.'
+    log.info '    --min_blood_QUAL       VALUE                   Minimum QUAL to retain a variant found only in the blood. Default=100.'
     log.info "Flags:"
     log.info '    --blood_tissue_filter                          To filter callings if both blood and tissue samples are available.'
     log.info ''
