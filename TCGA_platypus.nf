@@ -2,6 +2,7 @@ params.help = null
 params.out_folder = "."
 params.min_af = 0.1
 params.min_DP = 10
+params.blood_tissue_filter = false
 
 if (params.help) {
     log.info ''
@@ -62,19 +63,42 @@ process reformat {
 
 }
 
+process filter_blood_tissue {
+
+  input:
+  file all_reformated from reformated.toList()
+
+  output:
+  file "*blood_tissue_filtered.tsv" into blood_tissue_filtered
+
+  shell:
+  if(params.blood_tissue_filter){
+    '''
+    blood_tissue_filter.R
+    '''
+  } else {
+    '''
+      for file in *.tsv
+      do
+        ln -s "$file" "${file/.tsv/_blood_tissue_filtered.tsv}"
+      done
+    '''
+  }
+}
+
 process merge {
 
   publishDir params.out_folder, mode: 'move'
 
   input:
-  file all_reformated from reformated.toList()
+  file all_filtered from blood_tissue_filtered
 
   output:
   file "*.tsv" into reformated_for_annovar mode flatten
 
   shell:
   '''
-  cat *reformat.tsv > big.tsv
+  cat *blood_tissue_filtered.tsv > big.tsv
   awk -F" " '{print >  "TCGA_platypus_reformat_"$NF".tsv"}' big.tsv
   rm big.tsv
   '''
