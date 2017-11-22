@@ -12,8 +12,8 @@ argsL <- as.list(as.character(as.data.frame(do.call("rbind", parseArgs(args)))$V
 names(argsL) <- as.data.frame(do.call("rbind", parseArgs(args)))$V1
 args <- argsL;rm(argsL)
 
-if(is.null(args$min_blood_QUAL)) args$min_blood_QUAL = 100
-if(is.null(args$min_tissue_QUAL)) args$min_tissue_QUAL = 100
+if(is.null(args$min_blood_QUAL)) args$min_blood_QUAL = 10
+if(is.null(args$min_tissue_QUAL)) args$min_tissue_QUAL = 30
 if(is.null(args$cpu)) args$cpu = 1
 
 min_blood_QUAL = as.numeric(args$min_blood_QUAL)
