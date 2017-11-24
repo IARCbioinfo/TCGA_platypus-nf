@@ -3,10 +3,6 @@ params.out_folder = "."
 params.min_af = 0.1
 params.min_DP = 10
 params.blood_tissue_filter = false
-params.min_blood_QUAL = 100
-params.min_tissue_QUAL = 100
-params.cpu_R = 1
-params.mem_R = 4
 
 if (params.help) {
     log.info ''
