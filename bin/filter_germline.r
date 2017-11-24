@@ -17,7 +17,7 @@ min_DP = as.numeric(args$min_DP)
 VCF = args$vcf
 
 # read the input VCF
-vcf = read.table(pipe(paste("grep -v '^##' ",VCF," | sed s/^#//" )),stringsAsFactors=F,header=T,sep="\t",quote=NULL,check.names = F)
+vcf = read.table(pipe(paste("grep -v '^##' ",VCF," | sed s/^#//" )),stringsAsFactors=F,header=T,sep="\t",quote=NULL,check.names = F,fill=TRUE)
 header_size = as.numeric(system(paste(paste("sed -e '/^#CHROM/,$d' ",VCF,sep="")," | wc -l",sep=""), intern = T))
 con = file(VCF,"r")
 header = readLines(con, n=header_size)
