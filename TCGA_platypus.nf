@@ -108,7 +108,7 @@ process merge {
 
   shell:
   '''
-  cat  *blood_tissue_filtered.tsv > big.tsv
+  cat *blood_tissue_filtered.tsv > big.tsv
   awk -F" " '{print >  "TCGA_platypus_reformat_"$NF".tsv"}' big.tsv
   rm big.tsv
   '''
