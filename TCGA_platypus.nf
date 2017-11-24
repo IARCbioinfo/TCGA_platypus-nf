@@ -23,10 +23,7 @@ if (params.help) {
     log.info '    --out_folder           FOLDER                  Output folder containing annovar-ready tables.'
     log.info '    --min_af               VALUE                   Minimum allelic fraction to consider a germline. Default=0.1.'
     log.info '    --min_DP               VALUE                   Minimum coverage to consider a site. Default=10.'
-    log.info '    --min_blood_QUAL       VALUE                   Minimum QUAL to retain a variant found only in the blood. Default=100.'
-    log.info '    --min_tissue_QUAL      VALUE                   Minimum QUAL to retain a variant found only in the tissue. Default=100.'
-    log.info '    --cpu_R                VALUE                   Number of cpu to run R filtering on blood/normal samples in parallel. Default=1.'
-    log.info '    --mem_R                VALUE                   Memory (in GB) for R filtering on blood/normal samples. Default=4.'
+    log.info '    --ref                FILE (with index)       Reference fasta file indexed.'
     log.info "Flags:"
     log.info '    --blood_tissue_filter                          To filter callings if both blood and tissue samples are available.'
     log.info ''
@@ -34,23 +31,48 @@ if (params.help) {
     exit 1
 }
 
-all_vcf = Channel.fromPath( params.TCGA_folder+'/*.vcf.gz')
+assert (params.ref != true) && (params.ref != null) : "please specify --ref option (--ref reference.fasta(.gz))"
+assert (params.TCGA_folder != true) && (params.TCGA_folder != null) : "please specify --TCGA_folder option"
+
+fasta_ref = file(params.ref)
+fasta_ref_fai = file( params.ref+'.fai' )
+
+vcf = Channel.fromPath( params.TCGA_folder+'/*.vcf.gz')
                  .ifEmpty { error "empty TCGA folders" }
+
+process vt {
+
+  tag { vcf_tag }
+
+  input:
+  file vcf
+  file fasta_ref
+  file fasta_ref_fai
+
+  output:
+  file("${vcf_tag}_vt.vcf.gz") into vt_VCF
+
+  shell:
+  vcf_tag = vcf.baseName.replace(".vcf","")
+  '''
+  vcf-sort !{vcf_tag}.vcf.gz | vt decompose -s - | vt decompose_blocksub -a - | vt normalize -r !{fasta_ref} -q - | vt uniq - | bgzip -c > !{vcf_tag}_vt.vcf.gz
+  '''
+}
 
 process germline_filter {
 
   tag { SM_tag }
 
   input:
-  file all_vcf
+  file vt_VCF
 
   output:
   set val(SM_tag), file("*filter.vcf") into germ_filt
 
   shell:
-  SM_tag = all_vcf.baseName.substring(0,12)
+  SM_tag = vt_VCF.baseName.substring(0,12)
   '''
-  zcat !{all_vcf} > uncompressed.vcf
+  zcat !{vt_VCF} > uncompressed.vcf
   filter_germline.r --vcf=uncompressed.vcf --min_af=!{params.min_af} --min_DP=!{params.min_DP}
   '''
 
