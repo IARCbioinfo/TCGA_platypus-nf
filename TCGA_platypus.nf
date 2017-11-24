@@ -87,14 +87,11 @@ process filter_blood_tissue {
   shell:
   if(params.blood_tissue_filter){
     '''
-    blood_tissue_filter.R --min_blood_QUAL=!{params.min_blood_QUAL} --min_tissue_QUAL=!{params.min_tissue_QUAL} --cpu=!{params.cpu_R}
-    '''
-  } else {
-    '''
-      for file in *.tsv
-      do
-        ln -s "$file" "${file/.tsv/_blood_tissue_filtered.tsv}"
-      done
+    blood_tissue_filter.R
+    for file in *.tsv
+    do
+      ln -s "$file" "${file/.tsv/_blood_tissue_filtered.tsv}"
+    done
     '''
   }
 }
@@ -111,7 +108,7 @@ process merge {
 
   shell:
   '''
-  cat *blood_tissue_filtered.tsv > big.tsv
+  cat  *blood_tissue_filtered.tsv > big.tsv
   awk -F" " '{print >  "TCGA_platypus_reformat_"$NF".tsv"}' big.tsv
   rm big.tsv
   '''
