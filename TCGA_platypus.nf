@@ -93,9 +93,6 @@ process reformat {
 
 process filter_blood_tissue {
 
-  cpus params.cpu_R
-  memory params.mem_R+'G'
-
   input:
   file all_reformated from reformated.toList()
 
