@@ -70,7 +70,7 @@ process convert2annovar {
   vcf_tag = vt_VCF.baseName.replace(".vcf","")
   '''
   zcat !{vt_VCF} | sed '/^#CHROM/Q' > !{vcf_tag}_convert.vcf
-  zcat !{vt_VCF} | grep -m1 "^#CHROM" | sed 's/POS/START\tEND/g' >> !{vcf_tag}_convert.vcf
+  zcat !{vt_VCF} | grep -m1 "^#CHROM" | sed 's/POS\tID/START\tEND/g' >> !{vcf_tag}_convert.vcf
   convert2annovar.pl -format vcf4 -includeinfo !{vt_VCF} |  grep -v "^#" | cut -f-5,11- >> !{vcf_tag}_convert.vcf
   '''
 
