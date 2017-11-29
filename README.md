@@ -11,7 +11,11 @@ curl -fsSL get.nextflow.io | bash
 And move it to a location in your `$PATH` (`/usr/local/bin` for example here):
 ```bash
 sudo mv nextflow /usr/local/bin
-```
+```  
+
+Install [vt](https://genome.sph.umich.edu/wiki/Vt#Installation), and put the executable in your PATH.  
+
+Install [VCFtools](https://github.com/vcftools/vcftools.), and put `vcf-sort` in your PATH.
 
 #### Description
 
