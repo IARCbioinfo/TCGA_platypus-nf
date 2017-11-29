@@ -15,8 +15,9 @@ sudo mv nextflow /usr/local/bin
 
 #### Description
 
-This program takes in input a folder of VCF files, from variant calling on TCGA data : 10th column of header must be the TCGA sample barcode (see [specification here](https://wiki.nci.nih.gov/display/TCGA/TCGA+barcode)).  
-It reformats these VCF into annovar input tables by cancer type and output them in a result folder (`--out_folder`).  
+This program takes in input a folder of compressed VCF files, from variant calling on TCGA data : 10th column of header must be the TCGA sample barcode (see [specification here](https://wiki.nci.nih.gov/display/TCGA/TCGA+barcode)).  
+It reformats these VCF into annovar input tables by cancer type and output them in a result folder (`--out_folder`).
+__Caution__: VCF must be zipped, with extension `vcf.gz`.  
 
 #### Execution
 Nextflow seamlessly integrates with GitHub hosted code repositories:
