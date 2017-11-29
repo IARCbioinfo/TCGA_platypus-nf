@@ -1,6 +1,14 @@
 #! /usr/bin/env Rscript
 
-source("https://gist.githubusercontent.com/mfoll/a4dfbb92068dc559f130/raw/714dc8c2e97987fd4385dcef2722b3ef986d38d6/get_vcf_data.r")
+# load the get_genotype() function
+get_genotype=function(genotype,format,field,num=T) {
+  get_single_genotype=function(single_genotype,format,field) {
+    single_res=unlist(strsplit(single_genotype,":"))[which(unlist(strsplit(format,":"))==field)]
+    if (length(single_res)>0) single_res else NA
+  }
+  res=unlist(lapply(genotype,get_single_genotype,format,field))
+  if (num) as.numeric(res) else res
+}
 
 # get the parameters
 args <- commandArgs(TRUE)
