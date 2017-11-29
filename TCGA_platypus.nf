@@ -117,7 +117,7 @@ process filter_blood_tissue {
   file all_reformated from reformated.toList()
 
   output:
-  file "*blood_tissue_filtered.tsv" into blood_tissue_filtered
+  file "*blood_tissue_filtered.tsv" into blood_tissue_filtered mode flatten
 
   shell:
   if(params.blood_tissue_filter){
@@ -133,19 +133,35 @@ process filter_blood_tissue {
   '''
 }
 
+process annotation {
+
+  input:
+  file filt from blood_tissue_filtered
+
+  output:
+  file "*hg38_multianno.txt" into annotated
+
+  shell:
+  '''
+  table_annovar.pl -nastring NA -buildver hg38 --thread 1 --onetranscript -remove -protocol refGene,exac03nontcga,esp6500siv2_all,1000g2015aug_all,gnomad_exome,clinvar_20170905,revel -operation g,f,f,f,f,f,f -otherinfo !{filt} /appli57/annovar/Annovar_DB/hg38db
+  sed -i '1s/Otherinfo/QUAL\tFILTER\tINFO\tFORMAT\tGT\tID\tIndividual\tStudy/' !{filt}.hg38_multianno.txt
+  '''
+
+}
+
 process merge {
 
   publishDir params.out_folder, mode: 'move'
 
   input:
-  file all_filtered from blood_tissue_filtered
+  file annotated_table from annotated
 
   output:
   file "*.tsv" into reformated_for_annovar mode flatten
 
   shell:
   '''
-  cat *blood_tissue_filtered.tsv > big.tsv
+  cat *.tsv > big.tsv
   awk -F" " '{print >  "TCGA_platypus_reformat_"$NF".tsv"}' big.tsv
   rm big.tsv
   '''
