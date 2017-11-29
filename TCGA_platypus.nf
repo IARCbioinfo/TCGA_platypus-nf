@@ -67,7 +67,7 @@ process convert2annovar {
 
   shell:
   SM_tag = vt_VCF.baseName.substring(0,12)
-  vcf_tag = vcf.baseName.replace(".vcf","")
+  vcf_tag = vt_VCF.baseName.replace(".vcf","")
   '''
   zcat !{vt_VCF} | sed '/^#CHROM/Q' > !{vcf_tag}_convert.vcf
   zcat !{vt_VCF} | grep -m1 "^#CHROM" | sed 's/POS/START\tEND/g' >> !{vcf_tag}_convert.vcf
@@ -87,7 +87,7 @@ process germline_filter {
   set val(SM_tag), file("*filter.vcf") into germ_filt
 
   shell:
-  SM_tag = vt_VCF.baseName.substring(0,12)
+  SM_tag = convert_VCF.baseName.substring(0,12)
   '''
   filter_germline.r --vcf=!{convert_VCF} --min_af=!{params.min_af} --min_DP=!{params.min_DP}
   '''
