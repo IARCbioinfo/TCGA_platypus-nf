@@ -154,14 +154,14 @@ process merge {
   publishDir params.out_folder, mode: 'move'
 
   input:
-  file annotated_table from annotated
+  file annotated_table from annotated.toList()
 
   output:
   file "*.tsv" into reformated_for_annovar mode flatten
 
   shell:
   '''
-  cat *.tsv > big.tsv
+  cat *.txt > big.tsv
   awk -F" " '{print >  "TCGA_platypus_reformat_"$NF".tsv"}' big.tsv
   rm big.tsv
   '''
