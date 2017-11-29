@@ -144,7 +144,7 @@ process annotation {
   shell:
   '''
   table_annovar.pl -nastring NA -buildver hg38 --thread 1 --onetranscript -remove -protocol refGene,exac03nontcga,esp6500siv2_all,1000g2015aug_all,gnomad_exome,clinvar_20170905,revel -operation g,f,f,f,f,f,f -otherinfo !{filt} /appli57/annovar/Annovar_DB/hg38db
-  sed -i '1s/Otherinfo/QUAL\tFILTER\tINFO\tFORMAT\tGT\tID\tIndividual\tStudy/' !{filt}.hg38_multianno.txt
+  sed -i '1s/Otherinfo/QUAL\tFILTER\tINFO\tFORMAT\tGT\tIndividual\tStudy/' !{filt}.hg38_multianno.txt
   '''
 
 }
