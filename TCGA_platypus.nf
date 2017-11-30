@@ -167,7 +167,7 @@ process merge {
   shell:
   '''
   mlr --tsv cat *.txt > big.tsv
-  awk -F" " '{print >  "TCGA_platypus_reformat_"$NF".tsv"}' big.tsv
+  cat -n +2 big tsv | awk -F" " '{print >  "TCGA_platypus_reformat_"$NF".tsv"}'
   rm big.tsv
   '''
 }
