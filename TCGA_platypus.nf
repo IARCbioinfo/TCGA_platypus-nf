@@ -3,6 +3,8 @@ params.out_folder = "."
 params.min_af = 0.1
 params.min_DP = 10
 params.blood_tissue_filter = false
+params.annovar_cpu = 1
+params.annovar_db = null
 
 if (params.help) {
     log.info ''
@@ -15,11 +17,13 @@ if (params.help) {
     log.info ''
     log.info 'Mandatory arguments:'
     log.info '    --TCGA_folder          FOLDER                  Input folder of TCGA VCFs.'
+    log.info '    --annovar_db           FOLDER                  Path to annovar database.'
     log.info 'Optional arguments:'
     log.info '    --out_folder           FOLDER                  Output folder containing annovar-ready tables.'
     log.info '    --min_af               VALUE                   Minimum allelic fraction to consider a germline. Default=0.1.'
     log.info '    --min_DP               VALUE                   Minimum coverage to consider a site. Default=10.'
-    log.info '    --ref                FILE (with index)       Reference fasta file indexed.'
+    log.info '    --ref                  FILE (with index)       Reference fasta file indexed.'
+    log.info '    --annovar_cpu          VALUE                   Number of threads used by annovar. Default=1'
     log.info "Flags:"
     log.info '    --blood_tissue_filter                          To filter callings if both blood and tissue samples are available.'
     log.info ''
@@ -29,6 +33,7 @@ if (params.help) {
 
 assert (params.ref != true) && (params.ref != null) : "please specify --ref option (--ref reference.fasta(.gz))"
 assert (params.TCGA_folder != true) && (params.TCGA_folder != null) : "please specify --TCGA_folder option"
+assert (params.annovar_db != true) && (params.annovar_db != null) : "please specify --annovar_db option"
 
 fasta_ref = file(params.ref)
 fasta_ref_fai = file( params.ref+'.fai' )
@@ -143,7 +148,7 @@ process annotation {
 
   shell:
   '''
-  table_annovar.pl -nastring NA -buildver hg38 --thread 1 --onetranscript -remove -protocol refGene,exac03nontcga,esp6500siv2_all,1000g2015aug_all,gnomad_exome,clinvar_20170905,revel -operation g,f,f,f,f,f,f -otherinfo !{filt} /appli57/annovar/Annovar_DB/hg38db
+  table_annovar.pl -nastring NA -buildver hg38 --thread !{params.annovar_cpu} --onetranscript -remove -protocol refGene,exac03nontcga,esp6500siv2_all,1000g2015aug_all,gnomad_exome,clinvar_20170905,revel -operation g,f,f,f,f,f,f -otherinfo !{filt} !{params.annovar_db}
   sed -i '1s/Otherinfo/QUAL\tFILTER\tINFO\tFORMAT\tGT\tIndividual\tStudy/' !{filt}.hg38_multianno.txt
   '''
 
