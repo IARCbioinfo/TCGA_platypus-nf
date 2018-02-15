@@ -41,31 +41,12 @@ fasta_ref_fai = file( params.ref+'.fai' )
 vcf = Channel.fromPath( params.TCGA_folder+'/*.vcf.gz')
                  .ifEmpty { error "empty TCGA folders" }
 
-process vt {
-
-  tag { vcf_tag }
-
-  input:
-  file vcf
-  file fasta_ref
-  file fasta_ref_fai
-
-  output:
-  file("${vcf_tag}_vt.vcf.gz") into vt_VCF
-
-  shell:
-  vcf_tag = vcf.baseName.replace(".vcf","")
-  '''
-  vcf-sort !{vcf_tag}.vcf.gz | vt decompose -s - | vt decompose_blocksub -a - | vt normalize -r !{fasta_ref} -q - | vt uniq - | bgzip -c > !{vcf_tag}_vt.vcf.gz
-  '''
-}
-
 process convert2annovar {
 
   tag { SM_tag }
 
   input:
-  file vt_VCF
+  file vcf
 
   output:
   file("${vcf_tag}_convert.vcf") into convert_VCF
@@ -74,8 +55,8 @@ process convert2annovar {
   SM_tag = vt_VCF.baseName.substring(0,12)
   vcf_tag = vt_VCF.baseName.replace(".vcf","")
   '''
-  zcat !{vt_VCF} | sed '/^#CHROM/Q' > !{vcf_tag}_convert.vcf
-  zcat !{vt_VCF} | grep -m1 "^#CHROM" | sed 's/POS\tID/START\tEND/g' >> !{vcf_tag}_convert.vcf
+  zcat !{vcf} | sed '/^#CHROM/Q' > !{vcf_tag}_convert.vcf
+  zcat !{vcf} | grep -m1 "^#CHROM" | sed 's/POS\tID/START\tEND/g' >> !{vcf_tag}_convert.vcf
   convert2annovar.pl -format vcf4 -includeinfo !{vt_VCF} |  grep -v "^#" | cut -f-5,11- >> !{vcf_tag}_convert.vcf
   '''
 
