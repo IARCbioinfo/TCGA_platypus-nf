@@ -47,12 +47,12 @@ process convert2annovar {
   file("${vcf_tag}_convert.vcf") into convert_VCF
 
   shell:
-  SM_tag = vt_VCF.baseName.substring(0,12)
-  vcf_tag = vt_VCF.baseName.replace(".vcf","")
+  SM_tag = vcf.baseName.substring(0,12)
+  vcf_tag = vcf.baseName.replace(".vcf","")
   '''
   zcat !{vcf} | sed '/^#CHROM/Q' > !{vcf_tag}_convert.vcf
   zcat !{vcf} | grep -m1 "^#CHROM" | sed 's/POS\tID/START\tEND/g' >> !{vcf_tag}_convert.vcf
-  convert2annovar.pl -format vcf4 -includeinfo !{vt_VCF} |  grep -v "^#" | cut -f-5,11- >> !{vcf_tag}_convert.vcf
+  convert2annovar.pl -format vcf4 -includeinfo !{vcf} |  grep -v "^#" | cut -f-5,11- >> !{vcf_tag}_convert.vcf
   '''
 
 }
