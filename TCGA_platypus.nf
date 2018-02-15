@@ -22,7 +22,6 @@ if (params.help) {
     log.info '    --out_folder           FOLDER                  Output folder containing annovar-ready tables.'
     log.info '    --min_af               VALUE                   Minimum allelic fraction to consider a germline. Default=0.1.'
     log.info '    --min_DP               VALUE                   Minimum coverage to consider a site. Default=10.'
-    log.info '    --ref                  FILE (with index)       Reference fasta file indexed.'
     log.info '    --annovar_cpu          VALUE                   Number of threads used by annovar. Default=1'
     log.info "Flags:"
     log.info '    --blood_tissue_filter                          To filter callings if both blood and tissue samples are available.'
@@ -31,12 +30,8 @@ if (params.help) {
     exit 1
 }
 
-assert (params.ref != true) && (params.ref != null) : "please specify --ref option (--ref reference.fasta(.gz))"
 assert (params.TCGA_folder != true) && (params.TCGA_folder != null) : "please specify --TCGA_folder option"
 assert (params.annovar_db != true) && (params.annovar_db != null) : "please specify --annovar_db option"
-
-fasta_ref = file(params.ref)
-fasta_ref_fai = file( params.ref+'.fai' )
 
 vcf = Channel.fromPath( params.TCGA_folder+'/*.vcf.gz')
                  .ifEmpty { error "empty TCGA folders" }
