@@ -146,7 +146,7 @@ process merge {
   shell:
   '''
   mlr --tsv cat *.txt > big.tsv
-  tail -n +2 big.tsv | awk -F" " '{print >  "TCGA_platypus_reformat_"$NF".tsv"}'
-  rm big.tsv
+  study=`head -n2 big.tsv | awk '{print $NF}' | grep -v "Study"`
+  mv big.tsv TCGA_platypus_reformat_${study}.tsv
   '''
 }
