@@ -127,7 +127,7 @@ process annotation {
   shell:
   SM_tag = filt.baseName.substring(0,12)
   '''
-  table_annovar.pl -nastring NA -buildver hg38 --thread !{params.annovar_cpu} --onetranscript -remove -protocol refGene,exac03nontcga,esp6500siv2_all,1000g2015aug_all,gnomad_exome,clinvar_20170905,revel -operation g,f,f,f,f,f,f -otherinfo !{filt} !{params.annovar_db}
+  table_annovar.pl -nastring NA -buildver hg38 --thread !{params.annovar_cpu} --onetranscript -remove -protocol refGene,exac03nontcga,esp6500siv2_all,1000g2015aug_all,gnomad_exome,clinvar_20170905,revel,cosmic80 -operation g,f,f,f,f,f,f,f -otherinfo !{filt} !{params.annovar_db}
   sed -i '1s/Otherinfo/QUAL\tFILTER\tINFO\tFORMAT\tGT\tIndividual\tStudy/' !{filt}.hg38_multianno.txt
   '''
 
