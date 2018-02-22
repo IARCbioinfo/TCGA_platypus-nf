@@ -115,14 +115,19 @@ process filter_blood_tissue {
   if(params.blood_tissue_filter){
     '''
     blood_tissue_filter.R
+    for file in *.tsv
+    do
+      ln -s "$file" "${file/.tsv/_blood_tissue_filtered.tsv}"
+    done
     '''
-  }
+  } else {
   '''
   for file in *.tsv
   do
     ln -s "$file" "${file/.tsv/_blood_tissue_filtered.tsv}"
   done
   '''
+  }
 }
 
 process annotation {
