@@ -30,6 +30,17 @@ if (params.help) {
     exit 1
 }
 
+log.info ''
+log.info '---------------------------------------------------------'
+log.info 'Annotation of TCGA germline variant calling from platypus'
+log.info '---------------------------------------------------------'
+log.info 'Copyright (C) 2017 Tiffany Delhomme'
+log.info 'This program comes with ABSOLUTELY NO WARRANTY; for details see LICENSE.txt'
+log.info 'This is free software, and you are welcome to redistribute it'
+log.info 'under certain conditions; see LICENSE.txt for details.'
+log.info '--------------------------------------------------------'
+log.info(params.blood_tissue_filter == false ? "Filtering on normal tissue : no"  : "Filtering on normal tissue : yes" )
+
 assert (params.TCGA_folder != true) && (params.TCGA_folder != null) : "please specify --TCGA_folder option"
 assert (params.annovar_db != true) && (params.annovar_db != null) : "please specify --annovar_db option"
 
