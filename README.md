@@ -15,7 +15,7 @@ sudo mv nextflow /usr/local/bin
 
 Install [vt](https://genome.sph.umich.edu/wiki/Vt#Installation), and put the executable in your PATH.  
 
-Install [VCFtools](https://github.com/vcftools/vcftools.), and put `vcf-sort` in your PATH.
+Install [VCFtools](https://github.com/vcftools/vcftools), and put `vcf-sort` in your PATH.
 
 #### Description
 
